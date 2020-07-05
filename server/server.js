@@ -15,6 +15,32 @@ app.use(express.static(path.join(__dirname, '../public')));
 io.on('connection', (socket) => {
     console.log('New User connected');
 
+    // emit custom event - newMessage
+    socket.emit('newMessage', {
+        from: 'Admin',
+        text: 'Welcome to WIRED',
+        createdAt: new Date().getTime(),
+    });
+
+    // emit a broadcast event
+    socket.broadcast.emit('newMessage', {
+        from: 'Admin',
+        text: 'A new USer has just joined the Chat',
+        createdAt: new Date().getTime(),
+    });
+
+    // listen to custom event - createMessage
+    socket.on('createMessage', (data) => {
+        console.log(data);
+
+        // emit a broadcast event ot everyone
+        io.emit('newMessage', {
+            from: data.from,
+            text: data.text,
+            createdAt: new Date().toString(),
+        });
+    });
+
     // handle user disconnection
     socket.on('disconnect', () => console.log('User was disconnected'));
 });
