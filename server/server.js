@@ -3,7 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const { generateMessage } = require('./utils/message');
+const { generateMessage, generateLocationMessage } = require('./utils/message');
 
 // initialize the app and create a server to work with socketio
 const app = express();
@@ -35,6 +35,18 @@ io.on('connection', (socket) => {
 
         // emit a broadcast event ot everyone
         io.emit('newMessage', generateMessage(message.from, message.text));
+    });
+
+    // listen for user location event - createLocationMessage
+    socket.on('createLocationMessage', (locationInfo) => {
+        io.emit(
+            'newLocationMessage',
+            generateLocationMessage(
+                locationInfo.from,
+                locationInfo.latitude,
+                locationInfo.longitude
+            )
+        );
     });
 
     // handle user disconnection
