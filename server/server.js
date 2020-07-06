@@ -3,6 +3,8 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+const { generateMessage } = require('./utils/message');
+
 // initialize the app and create a server to work with socketio
 const app = express();
 const server = http.createServer(app);
@@ -16,29 +18,23 @@ io.on('connection', (socket) => {
     console.log('New User connected');
 
     // emit custom event - newMessage
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Welcome to WIRED',
-        createdAt: new Date().getTime(),
-    });
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to WIRED!'));
 
     // emit a broadcast event
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text: 'A new USer has just joined the Chat',
-        createdAt: new Date().getTime(),
-    });
+    socket.broadcast.emit(
+        'newMessage',
+        generateMessage('Admin', 'New User joined the chat')
+    );
 
     // listen to custom event - createMessage
-    socket.on('createMessage', (data) => {
-        console.log(data);
+    socket.on('createMessage', (message, callback) => {
+        console.log('createMessage', message);
+
+        // send an acknowledgement to the client
+        callback('Message received by the server');
 
         // emit a broadcast event ot everyone
-        io.emit('newMessage', {
-            from: data.from,
-            text: data.text,
-            createdAt: new Date().toString(),
-        });
+        io.emit('newMessage', generateMessage(message.from, message.text));
     });
 
     // handle user disconnection

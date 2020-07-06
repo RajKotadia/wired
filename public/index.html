@@ -8,8 +8,25 @@
     <body>
         <h1>Wired Realtime Chat Application</h1>
 
-        <script src="/socket.io/socket.io.js"></script>
+        <main class="container">
+            <!-- the message list -->
+            <ol id="messages"></ol>
 
+            <!-- new message form -->
+            <form id="message-form">
+                <div class="form-group">
+                    <input
+                        type="text"
+                        name="message"
+                        placeholder="Type a message.."
+                        required
+                    />
+                    <button type="submit">Send</button>
+                </div>
+            </form>
+        </main>
+
+        <script src="/socket.io/socket.io.js"></script>
         <script src="/js/index.js"></script>
     </body>
 </html>
