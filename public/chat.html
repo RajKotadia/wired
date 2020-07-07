@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="WIRED - A Real Time web based chat application"
+        />
+        <meta name="theme-color" content="#34234d" />
+        <title>Wired</title>
+        <link rel="shortcut icon" href="img/favicon.png" type="image/png" />
+        <link rel="stylesheet" href="css/styles.css" />
+    </head>
+    <body>
+        <header class="chat-header">
+            <h1>
+                <img src="img/chat.svg" alt="wired-logo" height="26px" /> WIRED
+            </h1>
+            <a href="/" class="btn">Leave Room</a>
+        </header>
+
+        <div class="chat-container">
+            <!-- Sidebar -->
+            <div class="chat-sidebar">
+                <h3>Room Name</h3>
+                <h2 id="room-name">JavaScript</h2>
+                <h3>Users</h3>
+                <ul id="users">
+                    <li>Brad</li>
+                </ul>
+            </div>
+
+            <!-- Main chat window -->
+            <main class="chat-main">
+                <!-- the message list -->
+                <div class="chat-messages">
+                    <div class="message">
+                        <p class="meta">Mary <span>9:15 pm</span></p>
+                        <p class="text">
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit. Eligendi, repudiandae.
+                        </p>
+                    </div>
+                </div>
+
+                <hr />
+                <!-- message form -->
+                <div class="chat-form-container">
+                    <!-- to send user location -->
+                    <button id="send-location" class="icon-btn">
+                        <img
+                            src="img/location.svg"
+                            alt="location-button"
+                            height="21px"
+                        />
+                    </button>
+
+                    <!-- to send a new message -->
+                    <form id="message-form">
+                        <input
+                            type="text"
+                            name="message"
+                            placeholder="Type a message"
+                            autocomplete="off"
+                            autofocus
+                            required
+                        />
+                        <button type="submit" class="icon-btn">
+                            <img
+                                src="img/send.svg"
+                                alt="send-button"
+                                height="21px"
+                            />
+                        </button>
+                    </form>
+                </div>
+            </main>
+        </div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/index.js"></script>
+    </body>
+</html>

@@ -11,6 +11,7 @@
     "author": "Raj Kotadia",
     "license": "ISC",
     "dependencies": {
+        "date-fns": "^2.14.0",
         "express": "^4.17.1",
         "socket.io": "^2.3.0"
     },

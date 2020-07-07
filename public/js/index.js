@@ -1,10 +1,34 @@
+// setting the viewport height
+document.documentElement.style.setProperty(
+    '--height',
+    `${window.innerHeight}px`
+);
+
+// resetting the viewport height on resize
+window.onresize = () => {
+    document.documentElement.style.setProperty(
+        '--height',
+        `${window.innerHeight}px`
+    );
+};
+
 // initialize socket
 const socket = io();
 
 // DOM variables
-const messageList = document.querySelector('#messages');
+const messageList = document.querySelector('.chat-messages');
 const messageForm = document.querySelector('#message-form');
 const locationButton = document.querySelector('#send-location');
+
+// scroll to the bottom when a new message is received
+const autoscroll = () => {
+    const threshold = messageList.scrollTop + messageList.clientHeight + 215;
+    const shouldScrollToBottom = threshold >= messageList.scrollHeight;
+
+    if (shouldScrollToBottom) {
+        messageList.scrollTop = messageList.scrollHeight;
+    }
+};
 
 // on connecting with the server
 socket.on('connect', () => {
@@ -15,10 +39,23 @@ socket.on('connect', () => {
 socket.on('newMessage', (message) => {
     console.log('newMessage', message);
 
+    const div = document.createElement('div');
+
+    if (message.from === 'Admin') {
+        div.setAttribute('class', 'admin-message');
+        div.innerHTML = `<p class="admin-text">${message.text}</p>`;
+        messageList.append(div);
+        return;
+    }
+
     // render the received message to the DOM
-    const li = document.createElement('li');
-    li.innerHTML = `${message.from}: ${message.text}`;
-    messageList.append(li);
+    div.setAttribute('class', 'message');
+    div.innerHTML = `                        
+                        <p class="meta">${message.from} <span>${message.createdAt}</span></p>
+                        <p class="text">${message.text}</p>
+                    `;
+    messageList.append(div);
+    autoscroll();
 });
 
 // listening for custom user location event - newLoationMessage
@@ -26,9 +63,14 @@ socket.on('newLocationMessage', (message) => {
     console.log('newLocationMessage', message);
 
     // render the received message to the DOM
-    const li = document.createElement('li');
-    li.innerHTML = `${message.from}:  <a href="${message.url}" target="_blank">Current Location</a>`;
-    messageList.append(li);
+    const div = document.createElement('div');
+    div.setAttribute('class', 'message');
+    div.innerHTML = `
+    <p class="meta">${message.from} <span>${message.createdAt}</span></p>
+    <p class="text"><a href="${message.url}" target="_blank">Shared Current Location</a></p>
+`;
+    messageList.append(div);
+    autoscroll();
 });
 
 // on getting disconnected from the server
@@ -45,11 +87,12 @@ messageForm.addEventListener('submit', (e) => {
         'createMessage',
         {
             from: 'User',
-            text: message,
+            text: message.trim(),
         },
         (data) => {
             // ack from the server
             console.log(data);
+            messageForm.message.value = '';
         }
     );
 });
@@ -60,6 +103,8 @@ locationButton.addEventListener('click', () => {
         return alert('Geolocation is not supported by your Browser');
     }
 
+    locationButton.setAttribute('disabled', 'disabled');
+
     // accessing the users current location
     navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -69,9 +114,14 @@ locationButton.addEventListener('click', () => {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
             });
+            locationButton.removeAttribute('disabled');
         },
         (err) => {
+            locationButton.removeAttribute('disabled');
             alert('Unable to fetch the current location');
+        },
+        {
+            enableHighAccuracy: true,
         }
     );
 });
