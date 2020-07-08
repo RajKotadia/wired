@@ -4,11 +4,14 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const { generateMessage, generateLocationMessage } = require('./utils/message');
+const { isValidString } = require('./utils/validation');
+const Users = require('./utils/Users');
 
 // initialize the app and create a server to work with socketio
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
+const users = new Users();
 
 // set static path
 app.use(express.static(path.join(__dirname, '../public')));
@@ -17,14 +20,41 @@ app.use(express.static(path.join(__dirname, '../public')));
 io.on('connection', (socket) => {
     console.log('New User connected');
 
-    // emit custom event - newMessage
-    socket.emit('newMessage', generateMessage('Admin', 'Welcome to WIRED!'));
+    // listening to join room event
+    socket.on('join', (roomData, callback) => {
+        const { username, room } = roomData;
 
-    // emit a broadcast event
-    socket.broadcast.emit(
-        'newMessage',
-        generateMessage('Admin', 'New User joined the chat')
-    );
+        // validate the data
+        if (!isValidString(username) || !isValidString(room)) {
+            return callback('Please provide a valid Details.');
+        }
+
+        // add the user to the room
+        socket.join(room);
+
+        users.removeUser(socket.id);
+        users.addUser(socket.id, username, room);
+
+        // emit custom event - newMessage (to welcome the new user)
+        socket.emit(
+            'newMessage',
+            generateMessage('Admin', `Welcome to the "${room}" room!`)
+        );
+
+        // emit a broadcast event - to provide an update to the other users
+        socket.broadcast
+            .to(room)
+            .emit(
+                'newMessage',
+                generateMessage('Admin', `${username} joined the chat`)
+            );
+
+        // to send room info to the client
+        io.to(room).emit('updateUserList', users.getUserList(room));
+
+        // send back the acknowledgement
+        callback();
+    });
 
     // listen to custom event - createMessage
     socket.on('createMessage', (message, callback) => {
@@ -50,7 +80,24 @@ io.on('connection', (socket) => {
     });
 
     // handle user disconnection
-    socket.on('disconnect', () => console.log('User was disconnected'));
+    socket.on('disconnect', () => {
+        console.log('User was disconnected');
+
+        // remove the user from the room
+        const user = users.removeUser(socket.id);
+        if (user) {
+            socket.leave(user.room);
+            io.to(user.room).emit(
+                'newMessage',
+                generateMessage('Admin', `${user.username} left the chat`)
+            );
+
+            io.to(user.room).emit(
+                'updateUserList',
+                users.getUserList(user.room)
+            );
+        }
+    });
 });
 
 const port = process.env.PORT || 3000;

@@ -19,6 +19,9 @@ const socket = io();
 const messageList = document.querySelector('.chat-messages');
 const messageForm = document.querySelector('#message-form');
 const locationButton = document.querySelector('#send-location');
+const userList = document.querySelector('#users');
+const roomName = document.querySelector('#room-name');
+const userCount = document.querySelector('#user-count');
 
 // scroll to the bottom when a new message is received
 const autoscroll = () => {
@@ -30,9 +33,49 @@ const autoscroll = () => {
     }
 };
 
+// Get username and room from URL
+const { username, room } = Qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+});
+
 // on connecting with the server
 socket.on('connect', () => {
     console.log('Connected to server');
+
+    // join room event
+    socket.emit(
+        'join',
+        {
+            username,
+            room,
+        },
+        (err) => {
+            if (err) {
+                alert(err);
+                window.location.href = '/';
+            } else {
+                console.log('No Error');
+                roomName.innerHTML = room;
+            }
+        }
+    );
+});
+
+// to get the list of users within a room
+socket.on('updateUserList', (userInfo) => {
+    userCount.innerHTML = userInfo.length;
+    // add the username to the DOM
+    const users = userInfo
+        .map((user) => {
+            if (user.id === socket.id) {
+                return `<li>${user.username} (You)</li>`;
+            }
+
+            return `<li>${user.username}</li>`;
+        })
+        .join('');
+
+    userList.innerHTML = users;
 });
 
 // listening to custom message event - newMessage
