@@ -47,13 +47,13 @@ a {
 
 .btn {
     cursor: pointer;
-    padding: 0.4rem 1rem;
+    padding: 0.6rem;
     background: var(--light-color);
     color: var(--light-purple);
     border: 0;
-    font-size: 1.1rem;
+    font-size: 1rem;
     border-radius: 0.4rem;
-    margin: 0.5rem;
+    /* margin: 0.5rem; */
 }
 
 /* Join Chat Page */
@@ -100,7 +100,7 @@ a {
     font-size: 1rem;
     width: 100%;
     outline: none;
-    padding: 0.3rem;
+    padding: 0.5rem;
     background-color: var(--message-color);
 }
 
@@ -128,6 +128,14 @@ footer a {
 }
 
 /* Chat Page */
+#toggle-info {
+    display: none;
+    background: var(--dark-purple);
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
 .icon-btn {
     height: 42px;
     background: var(--message-color);
@@ -142,8 +150,7 @@ footer a {
     background-color: #ccc;
 }
 
-.icon-btn:visited,
-.icon-btn:active {
+.icon-btn:focus {
     background-color: var(--message-color);
 }
 
@@ -172,6 +179,9 @@ footer a {
     color: #fff;
     padding: 20px;
     width: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .chat-sidebar h2 {
@@ -179,14 +189,38 @@ footer a {
     background: rgba(0, 0, 0, 0.1);
     padding: 10px;
     margin-bottom: 20px;
+    border-left: 3px solid var(--background-color);
 }
 
 .chat-sidebar h3 {
     margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.chat-sidebar #user-count {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 2px 7px;
+    color: var(--message-color);
+    border-radius: 0.4rem;
 }
 
 .chat-sidebar ul li {
-    padding: 10px 0;
+    padding: 10px 13px;
+    font-size: 1rem;
+    /* font-weight: 600; */
+    background: rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.5rem;
+    border-radius: 0.4rem;
+}
+
+.chat-sidebar .btn {
+    font-size: 1.1rem;
+    text-align: center;
+    display: inline-block;
+    margin: 0.1rem auto;
+    font-weight: 600;
+    width: 60%;
+    padding: 0.4rem;
 }
 
 /* Main chat window */
@@ -194,7 +228,7 @@ footer a {
     flex: 1;
     display: flex;
     flex-direction: column;
-    height: calc(var(--height) - 82px);
+    height: calc(var(--height) - 70px);
 }
 
 .chat-messages {
@@ -268,6 +302,18 @@ hr {
 
 @media (max-width: 700px) {
     .chat-sidebar {
-        display: none;
+        position: absolute;
+        left: 0;
+        height: calc(var(--height) - 70px);
+        width: 100%;
+        transform: translateX(-100%);
+        transition: transform 0.6s ease-in-out;
     }
+
+    #toggle-info {
+        display: block;
+    }
+}
+.active {
+    transform: translateX(0%);
 }

@@ -22,10 +22,12 @@ const locationButton = document.querySelector('#send-location');
 const userList = document.querySelector('#users');
 const roomName = document.querySelector('#room-name');
 const userCount = document.querySelector('#user-count');
+const toggleButton = document.querySelector('#toggle-info');
+const sidebar = document.querySelector('.chat-sidebar');
 
 // scroll to the bottom when a new message is received
 const autoscroll = () => {
-    const threshold = messageList.scrollTop + messageList.clientHeight + 215;
+    const threshold = messageList.scrollTop + messageList.clientHeight + 290;
     const shouldScrollToBottom = threshold >= messageList.scrollHeight;
 
     if (shouldScrollToBottom) {
@@ -46,8 +48,8 @@ socket.on('connect', () => {
     socket.emit(
         'join',
         {
-            username,
-            room,
+            username: username.trim(),
+            room: room.trim(),
         },
         (err) => {
             if (err) {
@@ -167,4 +169,9 @@ locationButton.addEventListener('click', () => {
             enableHighAccuracy: true,
         }
     );
+});
+
+// toggle sidebar
+toggleButton.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
 });

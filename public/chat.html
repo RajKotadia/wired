@@ -17,16 +17,25 @@
             <h1>
                 <img src="img/chat.svg" alt="wired-logo" height="26px" /> WIRED
             </h1>
-            <a href="/" class="btn">Leave Room</a>
+
+            <img
+                src="img/info.svg"
+                alt="room-info"
+                height="23px"
+                id="toggle-info"
+            />
         </header>
 
         <div class="chat-container">
             <!-- Sidebar -->
             <div class="chat-sidebar">
-                <h3>Room Name</h3>
-                <h2 id="room-name"></h2>
-                <h3>Users <span id="user-count"></span></h3>
-                <ul id="users"></ul>
+                <div>
+                    <h3>Room Name</h3>
+                    <h2 id="room-name"></h2>
+                    <h3>Users <span id="user-count"></span></h3>
+                    <ul id="users"></ul>
+                </div>
+                <a href="/" class="btn">Leave Room</a>
             </div>
 
             <!-- Main chat window -->
