@@ -28,7 +28,7 @@ const messageInput = document.querySelector('input');
 
 // scroll to the bottom when a new message is received
 const autoscroll = () => {
-    const threshold = messageList.scrollTop + messageList.clientHeight + 290;
+    const threshold = messageList.scrollTop + messageList.clientHeight + 400;
     const shouldScrollToBottom = threshold >= messageList.scrollHeight;
 
     if (shouldScrollToBottom) {
@@ -97,9 +97,13 @@ socket.on('newMessage', (message) => {
     // render the received message to the DOM
     div.setAttribute('class', 'message');
     div.innerHTML = `                        
-                        <p class="meta">${message.from} <span>${message.createdAt}</span></p>
+                        <p class="meta">${message.from.username} <span>${message.createdAt}</span></p>
                         <p class="text">${message.text}</p>
                     `;
+
+    if (message.from.id === socket.id) {
+        div.classList.add('align-right');
+    }
     messageList.append(div);
     autoscroll();
 });
@@ -112,9 +116,13 @@ socket.on('newLocationMessage', (message) => {
     const div = document.createElement('div');
     div.setAttribute('class', 'message');
     div.innerHTML = `
-    <p class="meta">${message.from} <span>${message.createdAt}</span></p>
-    <p class="text"><a href="${message.url}" target="_blank">Shared Current Location</a></p>
-`;
+                    <p class="meta">${message.from.username} <span>${message.createdAt}</span></p>
+                    <p class="text"><a href="${message.url}" target="_blank">Shared Current Location</a></p>
+                `;
+    if (message.from.id === socket.id) {
+        div.classList.add('align-right');
+    }
+
     messageList.append(div);
     autoscroll();
 });

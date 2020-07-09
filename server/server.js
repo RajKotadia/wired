@@ -64,7 +64,7 @@ io.on('connection', (socket) => {
             // emit a broadcast event ot everyone
             io.to(user.room).emit(
                 'newMessage',
-                generateMessage(user.username, message.text)
+                generateMessage(user, message.text)
             );
         }
 
@@ -79,7 +79,7 @@ io.on('connection', (socket) => {
         io.to(user.room).emit(
             'newLocationMessage',
             generateLocationMessage(
-                user.username,
+                user,
                 locationInfo.latitude,
                 locationInfo.longitude
             )
