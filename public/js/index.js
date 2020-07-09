@@ -24,6 +24,7 @@ const roomName = document.querySelector('#room-name');
 const userCount = document.querySelector('#user-count');
 const toggleButton = document.querySelector('#toggle-info');
 const sidebar = document.querySelector('.chat-sidebar');
+const messageInput = document.querySelector('input');
 
 // scroll to the bottom when a new message is received
 const autoscroll = () => {
@@ -118,8 +119,24 @@ socket.on('newLocationMessage', (message) => {
     autoscroll();
 });
 
+socket.on('isTyping', (info) => {
+    console.log(info);
+    const infoElement = document.querySelector('.info');
+    if (info.flag) {
+        infoElement.style.display = 'block';
+        infoElement.innerHTML = info.msg;
+    } else {
+        infoElement.style.display = 'none';
+    }
+});
+
 // on getting disconnected from the server
 socket.on('disconnect', () => console.log('Disconnected from server'));
+
+// emit an event when a user is typing
+messageInput.addEventListener('input', () => {
+    socket.emit('typing', true);
+});
 
 // getting form data
 messageForm.addEventListener('submit', (e) => {
@@ -127,11 +144,12 @@ messageForm.addEventListener('submit', (e) => {
 
     const message = messageForm.message.value;
 
+    socket.emit('typing', false);
+
     // emitting a custom event - createMessage
     socket.emit(
         'createMessage',
         {
-            from: 'User',
             text: message.trim(),
         },
         (data) => {
@@ -155,7 +173,6 @@ locationButton.addEventListener('click', () => {
         (position) => {
             // send location info via socket event
             socket.emit('createLocationMessage', {
-                from: 'User',
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
             });

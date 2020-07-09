@@ -224,6 +224,20 @@ footer a {
 }
 
 /* Main chat window */
+
+.info {
+    display: none;
+    background: var(--message-color);
+    color: var(--dark-purple);
+    padding: 0.2rem;
+    text-align: center;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 0.8rem;
+    box-shadow: 2px 0px 4px #888;
+    z-index: 1;
+}
+
 .chat-main {
     flex: 1;
     display: flex;

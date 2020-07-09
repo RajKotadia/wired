@@ -58,25 +58,47 @@ io.on('connection', (socket) => {
 
     // listen to custom event - createMessage
     socket.on('createMessage', (message, callback) => {
-        console.log('createMessage', message);
+        const user = users.getUser(socket.id);
+
+        if (user && isValidString(message.text)) {
+            // emit a broadcast event ot everyone
+            io.to(user.room).emit(
+                'newMessage',
+                generateMessage(user.username, message.text)
+            );
+        }
 
         // send an acknowledgement to the client
         callback('Message received by the server');
-
-        // emit a broadcast event ot everyone
-        io.emit('newMessage', generateMessage(message.from, message.text));
     });
 
     // listen for user location event - createLocationMessage
     socket.on('createLocationMessage', (locationInfo) => {
-        io.emit(
+        const user = users.getUser(socket.id);
+
+        io.to(user.room).emit(
             'newLocationMessage',
             generateLocationMessage(
-                locationInfo.from,
+                user.username,
                 locationInfo.latitude,
                 locationInfo.longitude
             )
         );
+    });
+
+    // handler for typing event
+    socket.on('typing', (flag) => {
+        const user = users.getUser(socket.id);
+
+        if (!flag) {
+            return socket.broadcast.to(user.room).emit('isTyping', {
+                flag: false,
+            });
+        }
+        socket.broadcast.to(user.room).emit('isTyping', {
+            flag: true,
+            msg: `${user.username} is Typing...`,
+        });
     });
 
     // handle user disconnection
