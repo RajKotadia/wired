@@ -6,10 +6,7 @@
     --purple-accent: #70449f;
     --message-color: #f4f4f4;
     --background-color: #fdfdfd;
-
     --light-color: #e6e9ff;
-    --success-color: #5cb85c;
-    --error-color: #d9534f;
 }
 
 * {
@@ -53,7 +50,6 @@ a {
     border: 0;
     font-size: 1rem;
     border-radius: 0.4rem;
-    /* margin: 0.5rem; */
 }
 
 /* Join Chat Page */
@@ -207,7 +203,6 @@ footer a {
 .chat-sidebar ul li {
     padding: 10px 13px;
     font-size: 1rem;
-    /* font-weight: 600; */
     background: rgba(0, 0, 0, 0.1);
     margin-bottom: 0.5rem;
     border-radius: 0.4rem;
@@ -275,7 +270,6 @@ footer a {
 
 .chat-messages .align-right {
     align-self: flex-end;
-    /* background-color: #583d79; */
     background-color: #614486;
     color: var(--message-color);
     border-radius: 0.8rem 0rem 0.8rem 0rem;
@@ -321,7 +315,6 @@ hr {
     padding: 0.7rem;
     background-color: var(--background-color);
     display: flex;
-    /* flex-direction: column; */
     justify-content: space-evenly;
 }
 
@@ -359,6 +352,7 @@ hr {
         width: 70%;
     }
 }
+
 .active {
     transform: translateX(0%);
 }

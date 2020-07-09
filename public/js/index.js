@@ -1,17 +1,3 @@
-// setting the viewport height
-document.documentElement.style.setProperty(
-    '--height',
-    `${window.innerHeight}px`
-);
-
-// resetting the viewport height on resize
-window.onresize = () => {
-    document.documentElement.style.setProperty(
-        '--height',
-        `${window.innerHeight}px`
-    );
-};
-
 // initialize socket
 const socket = io();
 
@@ -22,8 +8,6 @@ const locationButton = document.querySelector('#send-location');
 const userList = document.querySelector('#users');
 const roomName = document.querySelector('#room-name');
 const userCount = document.querySelector('#user-count');
-const toggleButton = document.querySelector('#toggle-info');
-const sidebar = document.querySelector('.chat-sidebar');
 const messageInput = document.querySelector('input');
 
 // scroll to the bottom when a new message is received
@@ -57,7 +41,6 @@ socket.on('connect', () => {
                 alert(err);
                 window.location.href = '/';
             } else {
-                console.log('No Error');
                 roomName.innerHTML = room;
             }
         }
@@ -67,6 +50,7 @@ socket.on('connect', () => {
 // to get the list of users within a room
 socket.on('updateUserList', (userInfo) => {
     userCount.innerHTML = userInfo.length;
+
     // add the username to the DOM
     const users = userInfo
         .map((user) => {
@@ -83,8 +67,7 @@ socket.on('updateUserList', (userInfo) => {
 
 // listening to custom message event - newMessage
 socket.on('newMessage', (message) => {
-    console.log('newMessage', message);
-
+    // render the received message to the DOM
     const div = document.createElement('div');
 
     if (message.from === 'Admin') {
@@ -94,13 +77,13 @@ socket.on('newMessage', (message) => {
         return;
     }
 
-    // render the received message to the DOM
-    div.setAttribute('class', 'message');
-    div.innerHTML = `                        
-                        <p class="meta">${message.from.username} <span>${message.createdAt}</span></p>
-                        <p class="text">${message.text}</p>
-                    `;
+    div.innerHTML = generateMessageHTML(
+        message.from.username,
+        message.text,
+        message.createdAt
+    );
 
+    div.classList.add('message');
     if (message.from.id === socket.id) {
         div.classList.add('align-right');
     }
@@ -110,15 +93,16 @@ socket.on('newMessage', (message) => {
 
 // listening for custom user location event - newLoationMessage
 socket.on('newLocationMessage', (message) => {
-    console.log('newLocationMessage', message);
-
     // render the received message to the DOM
     const div = document.createElement('div');
-    div.setAttribute('class', 'message');
-    div.innerHTML = `
-                    <p class="meta">${message.from.username} <span>${message.createdAt}</span></p>
-                    <p class="text"><a href="${message.url}" target="_blank">Shared Current Location</a></p>
-                `;
+
+    div.innerHTML = generateLocationMessageHTML(
+        message.from.username,
+        message.url,
+        message.createdAt
+    );
+
+    div.classList.add('message');
     if (message.from.id === socket.id) {
         div.classList.add('align-right');
     }
@@ -127,8 +111,8 @@ socket.on('newLocationMessage', (message) => {
     autoscroll();
 });
 
+// indicates that a user is typing
 socket.on('isTyping', (info) => {
-    console.log(info);
     const infoElement = document.querySelector('.info');
     if (info.flag) {
         infoElement.style.display = 'block';
@@ -162,7 +146,6 @@ messageForm.addEventListener('submit', (e) => {
         },
         (data) => {
             // ack from the server
-            console.log(data);
             messageForm.message.value = '';
         }
     );
@@ -195,6 +178,9 @@ locationButton.addEventListener('click', () => {
         }
     );
 });
+
+const toggleButton = document.querySelector('#toggle-info');
+const sidebar = document.querySelector('.chat-sidebar');
 
 // toggle sidebar
 toggleButton.addEventListener('click', () => {

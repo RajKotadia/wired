@@ -11,21 +11,7 @@
         <title>Wired</title>
         <link rel="shortcut icon" href="img/favicon.png" type="image/png" />
         <link rel="stylesheet" href="css/styles.css" />
-        <script>
-            // setting the viewport height
-            document.documentElement.style.setProperty(
-                '--height',
-                `${window.innerHeight}px`
-            );
-
-            // resetting the viewport height on resize
-            window.onresize = () => {
-                document.documentElement.style.setProperty(
-                    '--height',
-                    `${window.innerHeight}px`
-                );
-            };
-        </script>
+        <script src="js/utils.js"></script>
     </head>
     <body style="background-color: #f5f5f5;">
         <header class="index-header">

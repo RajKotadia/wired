@@ -26,7 +26,19 @@ io.on('connection', (socket) => {
 
         // validate the data
         if (!isValidString(username) || !isValidString(room)) {
-            return callback('Please provide a valid Details.');
+            return callback('Please provide valid details.');
+        }
+
+        // check if a user with same username already exists in the given room
+        const userList = users.getUserList(room);
+        const userExists = userList.filter(
+            (user) => user.username === username
+        )[0];
+
+        if (userExists) {
+            return callback(
+                'Username already taken. Please try a different username!'
+            );
         }
 
         // add the user to the room
