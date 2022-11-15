@@ -2,7 +2,7 @@
 
 A Real Time Web based multi room Chat Application :zap:
 
-> Check it out at https://wiredchat.herokuapp.com
+> Check it out at https://wired.cyclic.app
 
 -   Built using Node.js, Express and SocketIO
 -   Users can create and join new chat rooms.
