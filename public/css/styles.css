@@ -189,8 +189,26 @@ footer a {
 }
 
 .chat-sidebar h3 {
-    margin-bottom: 15px;
+    /* margin-bottom: 15px; */
     font-size: 1.1rem;
+}
+
+.chat-sidebar .room-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.chat-sidebar .room-info .invite-btn {
+    padding: 1px 5px;
+    background-color: transparent;
+    color: var(--background-color);
+    border: 1px solid var(--background-color);
+    border-radius: 4px;
+    cursor: pointer;
+    min-width: 46px;
 }
 
 .chat-sidebar #user-count {
@@ -198,6 +216,10 @@ footer a {
     padding: 2px 7px;
     color: var(--message-color);
     border-radius: 0.4rem;
+}
+
+.chat-sidebar ul {
+    margin-top: 15px;
 }
 
 .chat-sidebar ul li {

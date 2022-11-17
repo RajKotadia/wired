@@ -9,6 +9,22 @@ const userList = document.querySelector('#users');
 const roomName = document.querySelector('#room-name');
 const userCount = document.querySelector('#user-count');
 const messageInput = document.querySelector('input');
+const inviteButton = document.querySelector('.invite-btn');
+let timeKeeper;
+
+// Get username and room from URL
+const { username, room } = Qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+});
+
+inviteButton.addEventListener('click', () => {
+    clearTimeout(timeKeeper);
+    inviteButton.textContent = '✔';
+    navigator.clipboard.writeText(`${window.location.host}/?room=${room}`);
+    timeKeeper = setTimeout(() => {
+        inviteButton.textContent = 'Invite';
+    }, 300);
+})
 
 // scroll to the bottom when a new message is received
 const autoscroll = () => {
@@ -19,11 +35,6 @@ const autoscroll = () => {
         messageList.scrollTop = messageList.scrollHeight;
     }
 };
-
-// Get username and room from URL
-const { username, room } = Qs.parse(location.search, {
-    ignoreQueryPrefix: true,
-});
 
 // on connecting with the server
 socket.on('connect', () => {
