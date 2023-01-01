@@ -1,3 +1,18 @@
+window.onload = () => {
+    
+    if(window.location.pathname === '/') {
+        // Get room name from URL - the room name will be present as a querystring for the room invite link
+        const { room } = Qs.parse(location.search, {
+            ignoreQueryPrefix: true,
+        });
+        
+        if (room) {
+            const roomInput = document.getElementById('room');
+            roomInput.value = room;
+        }
+    }
+}
+
 // setting the viewport height
 document.documentElement.style.setProperty(
     '--height',
