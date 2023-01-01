@@ -10,16 +10,17 @@ const roomName = document.querySelector('#room-name');
 const userCount = document.querySelector('#user-count');
 const messageInput = document.querySelector('input');
 const inviteButton = document.querySelector('.invite-btn');
-let timeKeeper;
 
 // Get username and room from URL
 const { username, room } = Qs.parse(location.search, {
     ignoreQueryPrefix: true,
 });
 
+let timeKeeper;
+// add click event listener for the invite button 
 inviteButton.addEventListener('click', () => {
     clearTimeout(timeKeeper);
-    inviteButton.textContent = '✔';
+    inviteButton.textContent = 'Copied';
     navigator.clipboard.writeText(`${window.location.host}/?room=${room}`);
     timeKeeper = setTimeout(() => {
         inviteButton.textContent = 'Invite';
